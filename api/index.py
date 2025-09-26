@@ -14,7 +14,7 @@ app.add_middleware(
 )
 
 # ✅ Load telemetry data once at startup
-with open("q-vercel-latency.json", "r") as f:
+with open("C:\Users\kheri\vercel_app\q-vercel-latency.json", "r") as f:
     telemetry = json.load(f)
 
 @app.post("/")
