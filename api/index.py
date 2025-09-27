@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import numpy as np
 import json
 import os
@@ -54,4 +55,5 @@ async def check_latency(request: Request):
             "breaches": breaches
         }
 
-    return result
+    return JSONResponse(content=result, headers={"Access-Control-Allow-Origin": "*"})  
+
