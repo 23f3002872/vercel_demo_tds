@@ -6,16 +6,7 @@ import json
 import os
 from fastapi.responses import Response
 
-@app.options("/api/latency")
-async def options_handler():
-    return Response(
-        status_code=200,
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "*"
-        }
-    )
+
 app = FastAPI()
 
 # Enable CORS for all requests from any origin
