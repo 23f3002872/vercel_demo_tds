@@ -25,6 +25,12 @@ telemetry = defaultdict(list)
 for record in raw_telemetry:
     telemetry[record["region"]].append(record)
 
+
+@app.get("/")
+def root():
+    return {"message": "Latency API is live"}
+
+
 @app.post("/api/latency")
 async def check_latency(request: Request):
     body = await request.json()
