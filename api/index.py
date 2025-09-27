@@ -17,7 +17,13 @@ app.add_middleware(
 # Load telemetry data once at startup (use relative path for Vercel)
 json_path = os.path.join(os.path.dirname(__file__), "q-vercel-latency.json")
 with open(json_path, "r") as f:
-    telemetry = json.load(f)
+    raw_telemetry = json.load(f)
+
+# Group records by region
+from collections import defaultdict
+telemetry = defaultdict(list)
+for record in raw_telemetry:
+    telemetry[record["region"]].append(record)
 
 @app.post("/")
 async def check_latency(request: Request):
