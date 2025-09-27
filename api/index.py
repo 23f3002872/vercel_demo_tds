@@ -4,8 +4,7 @@ from fastapi.responses import JSONResponse
 import numpy as np
 import json
 import os
-from fastapi.responses import Response
-
+from collections import defaultdict
 
 app = FastAPI()
 
@@ -13,8 +12,8 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["POST"],
-    allow_headers=["*"]
+    allow_methods=["*"],  # POST, OPTIONS, etc
+    allow_headers=["*"],
 )
 
 # Load telemetry data once at startup (use relative path for Vercel)
@@ -23,27 +22,13 @@ with open(json_path, "r") as f:
     raw_telemetry = json.load(f)
 
 # Group records by region
-from collections import defaultdict
 telemetry = defaultdict(list)
 for record in raw_telemetry:
     telemetry[record["region"]].append(record)
 
-
 @app.get("/")
 def root():
     return {"message": "Latency API is live"}
-
-
-@app.options("/api/latency")
-async def options_handler():
-    return Response(
-        status_code=200,
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "*"
-        }
-    )
 
 @app.post("/api/latency")
 async def check_latency(request: Request):
@@ -65,8 +50,7 @@ async def check_latency(request: Request):
             "avg_latency": round(np.mean(latencies), 2),
             "p95_latency": round(np.percentile(latencies, 95), 2),
             "avg_uptime": round(np.mean(uptimes), 2),
-            "breaches": breaches
+            "breaches": breaches,
         }
 
-    return JSONResponse(content=result, headers={"Access-Control-Allow-Origin": "*"})  
-
+    return JSONResponse(content=result)
