@@ -4,7 +4,18 @@ from fastapi.responses import JSONResponse
 import numpy as np
 import json
 import os
+from fastapi.responses import Response
 
+@app.options("/api/latency")
+async def options_handler():
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "*"
+        }
+    )
 app = FastAPI()
 
 # Enable CORS for all requests from any origin
@@ -31,6 +42,17 @@ for record in raw_telemetry:
 def root():
     return {"message": "Latency API is live"}
 
+
+@app.options("/api/latency")
+async def options_handler():
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "*"
+        }
+    )
 
 @app.post("/api/latency")
 async def check_latency(request: Request):
