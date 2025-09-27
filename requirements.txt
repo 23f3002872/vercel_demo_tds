@@ -1,2 +1,4 @@
-fastapi
-numpy
+fastapi==0.113.0
+uvicorn==0.23.2
+numpy==1.26.2
+
