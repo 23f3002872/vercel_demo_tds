@@ -9,7 +9,9 @@ app = FastAPI()
 # Enable CORS for all requests from any origin
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"]
+    allow_origins=["*"],
+    allow_methods=["POST"],
+    allow_headers=["*"]
 )
 
 # Load telemetry data once at startup (use relative path for Vercel)
@@ -23,7 +25,7 @@ telemetry = defaultdict(list)
 for record in raw_telemetry:
     telemetry[record["region"]].append(record)
 
-@app.post("/")
+@app.post("/api/latency")
 async def check_latency(request: Request):
     body = await request.json()
     regions = body.get("regions", [])
