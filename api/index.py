@@ -8,14 +8,15 @@ from collections import defaultdict
 
 app = FastAPI()
 
-# Explicit CORS setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # allow all origins
-    allow_methods=["GET", "POST", "OPTIONS"],  # explicitly include OPTIONS
-    allow_headers=["*"],
-    allow_credentials=False,  # should stay False for wildcard
+    allow_origins=["*"],       # allow all origins
+    allow_methods=["*"],       # allow all HTTP methods
+    allow_headers=["*"],       # allow all headers
+    expose_headers=["*"],      # expose all headers
+    allow_credentials=False    # must be False with "*"
 )
+
 
 # Load telemetry once
 json_path = os.path.join(os.path.dirname(__file__), "q-vercel-latency.json")
