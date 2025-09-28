@@ -12,8 +12,9 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["*"],  # POST, OPTIONS, etc
+    allow_methods=["GET", "POST", "OPTIONS"], 
     allow_headers=["*"],
+    allow_credentials=True,
 )
 
 # Load telemetry data once at startup (use relative path for Vercel)
