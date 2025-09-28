@@ -8,21 +8,20 @@ from collections import defaultdict
 
 app = FastAPI()
 
-# Enable CORS for all requests from any origin
+# Explicit CORS setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["GET", "POST", "OPTIONS"], 
+    allow_origins=["*"],  # allow all origins
+    allow_methods=["GET", "POST", "OPTIONS"],  # explicitly include OPTIONS
     allow_headers=["*"],
-    allow_credentials=True,
+    allow_credentials=False,  # should stay False for wildcard
 )
 
-# Load telemetry data once at startup (use relative path for Vercel)
+# Load telemetry once
 json_path = os.path.join(os.path.dirname(__file__), "q-vercel-latency.json")
 with open(json_path, "r") as f:
     raw_telemetry = json.load(f)
 
-# Group records by region
 telemetry = defaultdict(list)
 for record in raw_telemetry:
     telemetry[record["region"]].append(record)
@@ -32,10 +31,9 @@ def root():
     return {"message": "Latency API is live"}
 
 @app.post("/api/latency")
-async def check_latency(request: Request):
-    body = await request.json()
-    regions = body.get("regions", [])
-    threshold = body.get("threshold_ms", 180)
+async def check_latency(payload: dict):
+    regions = payload.get("regions", [])
+    threshold = payload.get("threshold_ms", 180)
 
     result = {}
     for region in regions:
@@ -51,7 +49,7 @@ async def check_latency(request: Request):
             "avg_latency": round(np.mean(latencies), 2),
             "p95_latency": round(np.percentile(latencies, 95), 2),
             "avg_uptime": round(np.mean(uptimes), 2),
-            "breaches": breaches,
+            "breaches": breaches
         }
 
     return JSONResponse(content=result)
