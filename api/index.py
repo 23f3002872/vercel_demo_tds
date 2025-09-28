@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 import numpy as np
 import json
 import os
@@ -8,15 +8,27 @@ from collections import defaultdict
 
 app = FastAPI()
 
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],       # allow all origins
-    allow_methods=["*"],       # allow all HTTP methods
-    allow_headers=["*"],       # allow all headers
-    expose_headers=["*"],      # expose all headers
-    allow_credentials=False    # must be False with "*"
+    allow_origins=["*"],        # allow all origins
+    allow_methods=["*"],        # allow all HTTP methods
+    allow_headers=["*"],        # allow all headers
+    expose_headers=["*"],       # expose all headers
+    allow_credentials=False     # must be False with "*"
 )
 
+# Handle preflight OPTIONS request explicitly
+@app.options("/api/latency")
+async def options_latency():
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "*"
+        }
+    )
 
 # Load telemetry once
 json_path = os.path.join(os.path.dirname(__file__), "q-vercel-latency.json")
