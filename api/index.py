@@ -11,25 +11,14 @@ app = FastAPI()
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],        # allow all origins
+    allow_origins=["https://exam.sanand.workers.dev/"],       
     allow_methods=["*"],        # allow all HTTP methods
     allow_headers=["*"],        # allow all headers
     expose_headers=["*"],       # expose all headers
     allow_credentials=False     # must be False with "*"
 )
 
-# Handle preflight OPTIONS request explicitly
-@app.options("/api/latency")
-async def options_latency():
-    return Response(
-        status_code=200,
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "*",
-            "credentials": "False"
-        }
-    )
+
 
 # Load telemetry once
 json_path = os.path.join(os.path.dirname(__file__), "q-vercel-latency.json")
