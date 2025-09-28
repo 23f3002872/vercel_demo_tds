@@ -9,14 +9,15 @@ from collections import defaultdict
 app = FastAPI()
 
 # CORS middleware
+from fastapi.middleware.cors import CORSMiddleware
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],       
-    allow_methods=["*"],        # allow all HTTP methods
-    allow_headers=["*"],        # allow all headers
-    expose_headers=["*"],       # expose all headers
-    allow_credentials=False    # must be False with "*"
+    allow_origins=["*"],   # ✅ allow all origins
+    allow_methods=["*"],   # ✅ allow POST, GET, OPTIONS etc.
+    allow_headers=["*"],   # ✅ allow Content-Type, Authorization etc.
 )
+
 
 
 
